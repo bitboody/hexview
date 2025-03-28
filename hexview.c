@@ -3,15 +3,16 @@
 
 int view_hex(char path[]);
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     if (argc != 2)
     {
         printf("Usage: %s <file_path>\n", argv[0]);
-        return;
+        return -1;
     }
 
     view_hex(argv[1]);
+    return 0;
 }
 
 int view_hex(char path[])
@@ -20,6 +21,7 @@ int view_hex(char path[])
     size_t bytes_read;
     size_t offset = 0;
     size_t buffer_size = 16;
+    char ascii_string[17];
 
     unsigned char *buffer = malloc(buffer_size);
     if (!buffer)
@@ -38,24 +40,33 @@ int view_hex(char path[])
 
     while ((bytes_read = fread(buffer, 1, buffer_size, fptr)) > 0)
     {
+
         for (size_t i = 0; i < bytes_read; i++)
         {
             if (offset % 16 == 0)
             {
-                printf("%08zX   ", offset);
+                printf("%08X   ", offset);
             }
+
             printf("%02X ", buffer[i]);
+            ascii_string[i % 16] = (buffer[i] >= 32 && buffer[i] <= 126) ? buffer[i] : '.';
+
             offset++;
+
             if (offset % 16 == 0)
             {
-                printf("\n");
+                printf("  %s\n", ascii_string);
             }
         }
     }
 
     if (offset % 16 != 0)
     {
-        printf("\n");
+        int padding = (16 - (offset % 16)) * 3;
+        printf("%*s  ", padding, "");
+
+        ascii_string[offset % 16] = '\0';
+        printf("%s\n", ascii_string);
     }
 
     fclose(fptr);
