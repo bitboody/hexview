@@ -40,7 +40,6 @@ int view_hex(char path[])
 
     while ((bytes_read = fread(buffer, 1, buffer_size, fptr)) > 0)
     {
-
         for (size_t i = 0; i < bytes_read; i++)
         {
             if (offset % 16 == 0)
