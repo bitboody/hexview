@@ -1,9 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main()
+int view_hex(char path[]);
+
+void main(int argc, char *argv[])
 {
-    char file_dist[] = "a.exe";
+    if (argc != 2)
+    {
+        printf("Usage: ./hexview path/to/file\n");
+        return;
+    }
+
+    view_hex(argv[1]);
+}
+
+int view_hex(char path[])
+{
     FILE *fptr;
     size_t bytes_read;
     size_t offset = 0;
@@ -16,10 +28,10 @@ int main()
         return -1;
     }
 
-    fptr = fopen(file_dist, "rb");
+    fptr = fopen(path, "rb");
     if (!fptr)
     {
-        printf("%s not found.\n", file_dist);
+        printf("%s not found.\n", path);
         free(buffer);
         return -1;
     }
