@@ -1,21 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-int view_hex(char path[]);
+int view_hex(char path[], size_t limit);
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2)
+    int limit = -1;
+    int opt;
+
+    while ((opt = getopt(argc, argv, "l:")) != -1)
     {
-        printf("Usage: %s <file_path>\n", argv[0]);
+        switch (opt)
+        {
+        case 'l':
+            limit = (unsigned int)strtol(optarg, NULL, 16) + 0x10;
+            break;
+        default:
+            fprintf(stderr, "Usage: %s [-l limit <file>\n]", argv[0]);
+            return -1;
+        }
+    }
+
+    if (optind >= argc)
+    {
+        fprintf(stderr, "Expected file argument after options\n");
         return -1;
     }
 
-    view_hex(argv[1]);
-    return 0;
+    char *file_path = argv[optind];
+
+    return view_hex(file_path, limit);
 }
 
-int view_hex(char path[])
+int view_hex(char path[], size_t limit)
 {
     FILE *fptr;
     size_t bytes_read;
@@ -56,6 +74,10 @@ int view_hex(char path[])
             {
                 printf("  %s\n", ascii_string);
             }
+        }
+        if (offset == limit)
+        {
+            break;
         }
     }
 
