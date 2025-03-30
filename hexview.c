@@ -5,19 +5,6 @@
 
 int view_hex(char path[], size_t limit, char out_path[]);
 
-int output_file(const char *str, const char *out_path)
-{
-    FILE *fptr = fopen(out_path, "a");
-    if (!fptr)
-    {
-        return -1;
-    }
-
-    fputs(str, fptr);
-    fclose(fptr);
-    return 0;
-}
-
 int main(int argc, char *argv[])
 {
     int opt;
@@ -72,6 +59,19 @@ int main(int argc, char *argv[])
     int result = view_hex(file_path, limit, out_path);
     free(out_path);
     return result;
+}
+
+int output_file(const char *str, const char *out_path)
+{
+    FILE *fptr = fopen(out_path, "a");
+    if (!fptr)
+    {
+        return -1;
+    }
+
+    fputs(str, fptr);
+    fclose(fptr);
+    return 0;
 }
 
 int view_hex(char path[], size_t limit, char out_path[])
